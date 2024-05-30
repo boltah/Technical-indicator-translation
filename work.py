@@ -1,6 +1,8 @@
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
+import datetime
+
 
 # Fetch historical data
 ticker = 'AAPL'
@@ -8,7 +10,7 @@ data = yf.download(ticker, period='2y', interval='1d')
 
 # Parameters
 range_candle = 15
-showPD = False
+showPD = True
 showBearishBOS = False
 showBullishBOS = False
 
@@ -23,6 +25,10 @@ bearishTrendColour = 'red'
 data['PDH'] = data['High'].shift(1)
 data['PDL'] = data['Low'].shift(1)
 candle_width=0.5
+
+yesterday = datetime.date.today() - datetime.timedelta(days=1)
+yesterday_data = data.loc[data.index.date == yesterday]
+
 # Plot PDH and PDL if showPD is True
 fig = go.Figure(data=[go.Candlestick(
         x=data.index,
@@ -33,9 +39,32 @@ fig = go.Figure(data=[go.Candlestick(
     )])
 
 if showPD:
-    fig.add_trace(go.Scatter(x=data.index, y=data['PDH'], mode='lines', name='PDH', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=data.index, y=data['PDL'], mode='lines', name='PDL', line=dict(color='blue')))
-
+    #fig.add_trace(go.Scatter(x=data.index, y=data['PDH'], mode='lines', name='PDH', line=dict(color='blue')))
+    #fig.add_trace(go.Scatter(x=data.index, y=data['PDL'], mode='lines', name='PDL', line=dict(color='blue')))
+    if not yesterday_data.empty:
+        pdh = yesterday_data['PDH'].values[0]
+        pdl = yesterday_data['PDL'].values[0]
+        fig.add_shape(type="line",
+                  x0=0, x1=1, xref='paper',
+                  y0=pdh, y1=pdh, yref='y',
+                  line=dict(color="Blue", width=1))
+        fig.add_annotation(x=1, xref='paper', y=pdh,
+                       text="PDH",
+                       showarrow=False,
+                       bgcolor="Blue",
+                       font=dict(color="white"),
+                       xanchor='left')
+        fig.add_shape(type="line",
+                  x0=0, x1=1, xref='paper',
+                  y0=pdl, y1=pdl, yref='y',
+                  line=dict(color="Red", width=1))
+        fig.add_annotation(x=1, xref='paper', y=pdl,
+                       text="PDL",
+                       showarrow=False,
+                       bgcolor="Red",
+                       font=dict(color="white"),
+                       xanchor='left')
+    
 # Calculate structure low
 data['StructureLow'] = data['Low'].rolling(window=range_candle).min().shift(1)
 
