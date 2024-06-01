@@ -72,13 +72,12 @@ def detect_order_blocks_bos(data, range_candle, showBearishBOS=True, showBullish
 
     for i in range(range_candle, len(data)):
         row = data.iloc[i]
-
-        if row['Low'] < data['StructureLow'].iloc[i]:
-            if i - lastUpIndex < 1000 and lastUpIndex is not None:
+        if row['Low'] < row['StructureLow']:
+            if i - lastUpIndex < 1000:
                 shortBoxes.append((lastUpIndex, lastHigh, lastUpLow))
                 if showBearishBOS:
                     CandleColourMode = 0
-                    bosLines.append((data.index[lastUpIndex], lastUpLow, row.name, lastUpLow, CandleColourMode))
+                    bosLines.append((data.index[lastUpIndex], lastUpLow, data.index[i], lastUpLow, CandleColourMode))
                 BosCandle = True
                 
         
