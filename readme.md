@@ -2,14 +2,6 @@ Technical indicator translation from pine script
 
 This project is an implementation of order block indicator from tradingview
 
-\
- \              /\
-  \____________/  \
-   \          /
-    \  /\    /
-     \/  \  /
-          \/ ||||||||||||||
-
 About
 This project uses yfinance to get information from yahoo finance about a stock,
 which is then represented as a candle stick chart by plotly.
