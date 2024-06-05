@@ -1,9 +1,7 @@
-import utils
-import plotly.graph_objects as go
-import datetime
+from utils import *
 
 
-def initialize_plot(data):
+def initialize_plot(data: pd.DataFrame) -> go.Figure:
     """Initialize a candlestick chart for data using Plotly.
 
     This function takes a DataFrame that contains financial market data and
@@ -28,16 +26,16 @@ def initialize_plot(data):
                 low=data["Low"],
                 close=data["Close"],
                 increasing=dict(
-                    line=dict(width=utils.CANDLE_WIDTH, color="green")),
+                    line=dict(width=CANDLE_WIDTH, color="green")),
                 decreasing=dict(
-                    line=dict(width=utils.CANDLE_WIDTH, color="red"))
+                    line=dict(width=CANDLE_WIDTH, color="red"))
             )
         ]
     )
     return fig
 
 
-def add_pdh_pdl_to_plot(fig, data):
+def add_pdh_pdl_to_plot(fig: go.Figure, data: pd.DataFrame) -> go.Figure:
     """Add horizontal lines for (PDH) and (PDL) to a Plotly candlestick chart.
 
     This function calculates the PDH and PDL for the previous day from the
@@ -57,7 +55,7 @@ def add_pdh_pdl_to_plot(fig, data):
                                         that contains the candlestick chart
                                         and PDH and PDL lines.
     """
-    if utils.SHOW_PD:
+    if SHOW_PD:
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         yesterday_data = data.loc[data.index.date == yesterday]
         if not yesterday_data.empty:
@@ -106,7 +104,8 @@ def add_pdh_pdl_to_plot(fig, data):
     return fig
 
 
-def add_order_blocks_to_plot(fig, data, long_boxes, short_boxes):
+def add_order_blocks_to_plot(fig: go.Figure, data: pd.DataFrame, long_boxes: list[tuple],
+                             short_boxes: list[tuple]) -> go.Figure:
     """Render representations of long and short order blocks to Plotly figure.
 
     This function iterates over lists of long and short order blocks
@@ -136,8 +135,8 @@ def add_order_blocks_to_plot(fig, data, long_boxes, short_boxes):
             x1=data.index[-1],
             y0=box[2],
             y1=box[1],
-            line=dict(color=utils.BULLISH_OB_COLOUR),
-            fillcolor=utils.BULLISH_OB_COLOUR,
+            line=dict(color=BULLISH_OB_COLOUR),
+            fillcolor=BULLISH_OB_COLOUR,
         )
     for box in short_boxes:
         fig.add_shape(
@@ -146,13 +145,13 @@ def add_order_blocks_to_plot(fig, data, long_boxes, short_boxes):
             x1=data.index[-1],
             y0=box[2],
             y1=box[1],
-            line=dict(color=utils.BEARISH_OB_COLOUR),
-            fillcolor=utils.BEARISH_OB_COLOUR,
+            line=dict(color=BEARISH_OB_COLOUR),
+            fillcolor=BEARISH_OB_COLOUR,
         )
     return fig
 
 
-def add_bos_lines_to_plot(fig, bos_lines):
+def add_bos_lines_to_plot(fig: go.Figure, bos_lines: list[tuple]) -> go.Figure:
     """Add BOS (Break of Structure) lines to a Plotly figure.
 
     This function iterates over a list of BOS lines and adds corresponding
@@ -184,7 +183,7 @@ def add_bos_lines_to_plot(fig, bos_lines):
 
 
 # finalizes the chart
-def finalize_plot(fig, ticker, period):
+def finalize_plot(fig: go.Figure, ticker: str, period: str) -> go.Figure:
     """Finalize the appearance of a Plotly figure.
 
     This function updates the layout of a given Plotly figure to include a

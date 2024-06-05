@@ -1,7 +1,7 @@
-import yfinance as yf
+from utils import *
 
 
-def fetch_historical_data(ticker, period, interval="1d"):
+def fetch_historical_data(ticker: str, period: str, interval: str = "1d") -> pd.DataFrame:
     """Fetch historical market data for ticker using the Yahoo Finance API.
 
     This function retrieves historical data for the given 'TICKER' over the

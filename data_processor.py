@@ -1,7 +1,7 @@
-import utils
+from utils import *
 
 
-def calculate_pdh_pdl(data):
+def calculate_pdh_pdl(data: pd.DataFrame) -> pd.DataFrame:
     """Calculate the Previous Day High (PDH) and Previous Day Low (PDL).
 
     This function adds two new columns to the DataFrame 'data': 'PDH' and 'PDL'
@@ -24,7 +24,7 @@ def calculate_pdh_pdl(data):
     return data
 
 
-def calculate_structure_low(data):
+def calculate_structure_low(data: pd.DataFrame) -> pd.DataFrame:
     """Calculate the structure lows in data based on rolling minimum values.
 
     This function computes the rolling minimum of the 'Low' price over a
@@ -44,7 +44,7 @@ def calculate_structure_low(data):
                           'StructureLowIndex' - the index of the minimum
                           value within each window.
     """
-    low_rolling_min = data["Low"].rolling(window=utils.RANGE_CANDLE).min()
+    low_rolling_min = data["Low"].rolling(window=RANGE_CANDLE).min()
     data["StructureLow"] = low_rolling_min.shift(1)
     data["StructureLowIndex"] = low_rolling_min.idxmin()
     return data

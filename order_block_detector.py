@@ -1,4 +1,4 @@
-import utils
+from utils import *
 
 
 class OrderBlockDetector:
@@ -22,24 +22,24 @@ class OrderBlockDetector:
         last_high (float): High value of the last up candle.
     """
 
-    def __init__(self, data):
+    def __init__(self, data: pd.DataFrame) -> None:
         """
         Initializes the OrderBlockDetector with the given data.
 
         Args:
             data (pd.DataFrame): The input financial market data.
         """
-        self.data = data
-        self.range_candle = utils.RANGE_CANDLE
-        self.show_bearish_bos = utils.SHOW_BEARISH_BOS
-        self.show_bullish_bos = utils.SHOW_BULLISH_BOS
-        self.long_boxes = []
-        self.short_boxes = []
-        self.bos_lines = []
+        self.data: pd.DataFrame = data
+        self.range_candle: int = RANGE_CANDLE
+        self.show_bearish_bos: bool = SHOW_BEARISH_BOS
+        self.show_bullish_bos: bool = SHOW_BULLISH_BOS
+        self.long_boxes: list[tuple] = []
+        self.short_boxes: list[tuple] = []
+        self.bos_lines: list[tuple] = []
         self.last_down_index = self.last_down = self.last_low = 0
         self.last_up_index = self.last_long_index = self.last_up_low = self.last_high = 0
 
-    def detect_order_blocks_bos(self):
+    def detect_order_blocks_bos(self) -> tuple[list[tuple], list[tuple], list[tuple]]:
         """
         Detects order blocks and Break of Structure (BOS) lines in the data.
 
@@ -56,7 +56,7 @@ class OrderBlockDetector:
             self._update_last_indices(row, i)
         return self.long_boxes, self.short_boxes, self.bos_lines
 
-    def _detect_short_boxes(self, row, i):
+    def _detect_short_boxes(self, row: pd.Series, i: int) -> None:
         """
         Detects short order blocks in the given row of data.
 
@@ -89,7 +89,7 @@ class OrderBlockDetector:
                         )
                     self.last_long_index = i
 
-    def _detect_long_boxes(self, row):
+    def _detect_long_boxes(self, row: pd.Series) -> None:
         """
         Detects long order blocks in the given row of data.
 
@@ -100,7 +100,7 @@ class OrderBlockDetector:
             if row["Close"] < box[2]:
                 self.long_boxes.remove(box)
 
-    def _update_last_indices(self, row, i):
+    def _update_last_indices(self, row: pd.Series, i: int) -> None:
         """
         Updates the indices and values for the last up and down candles.
 
